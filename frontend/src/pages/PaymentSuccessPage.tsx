@@ -41,7 +41,6 @@ const PaymentSuccessPage = () => {
   const [searchParams] = useSearchParams();
   const [loading, setLoading] = useState(true);
   const [success, setSuccess] = useState(false);
-  const [_orderId, _setOrderId] = useState<string | null>(null);
   const [error, setError] = useState('');
   const [paymentDetails, setPaymentDetails] = useState<PaymentStatusResponse | null>(null);
 

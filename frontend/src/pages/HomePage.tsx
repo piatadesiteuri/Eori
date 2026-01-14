@@ -219,7 +219,8 @@ const HomePage = () => {
     }
   };
 
-  const _handleBillingCuiSearch = async () => {
+  // Removed unused function: _handleBillingCuiSearch
+  const _unused_handleBillingCuiSearch = async () => {
     if (!billingCui || !/^\d+$/.test(billingCui)) {
       setBillingCuiError('CUI invalid. Te rugăm să introduci un CUI valid format doar din cifre.');
       setBillingCompanyData(null);
@@ -248,8 +249,9 @@ const HomePage = () => {
     }
   };
 
-  const _handleBillingCuiChange = (value: string) => {
-    setBillingCui(value);
+  // Removed unused function: _handleBillingCuiChange
+  const _unused_handleBillingCuiChange = (_value: string) => {
+    setBillingCui(_value);
     if (billingCuiError) {
       setBillingCuiError('');
     }
@@ -258,7 +260,8 @@ const HomePage = () => {
     }
   };
 
-  const _handleContinueToStep2 = () => {
+  // Removed unused function: _handleContinueToStep2
+  const _unused_handleContinueToStep2 = () => {
     if (companyData) {
       setStep(2);
     }
@@ -266,7 +269,8 @@ const HomePage = () => {
 
   // Removed - no longer needed for EORI form
 
-  const _handleBillingContinue = () => {
+  // Removed unused function: _handleBillingContinue
+  const _unused_handleBillingContinue = () => {
     // Doar validăm și trecem la pasul următor, fără să creăm comanda
     if (billingType === 'other_company' && !billingCompanyData) {
       return; // Nu ar trebui să ajungă aici dacă validarea este corectă
@@ -325,26 +329,7 @@ const HomePage = () => {
     }
   };
 
-  const _handleOpenPdfModal = (type: 'company' | 'individual' | 'beneficiari_reali_company' | 'beneficiari_reali_individual' | 'istoric_company' = 'company') => {
-    // Resetăm starea de închidere dacă există
-    setIsPdfModalClosing(false);
-    setIsPdfLoading(true); // Resetăm loading când deschidem modalul
-    setPdfType(type); // Setăm tipul PDF-ului
-    
-    // Prevenim scroll-ul paginii
-    document.body.style.overflow = 'hidden';
-    
-    // Setăm starea de deschidere și deschidem modalul simultan
-    setIsPdfModalOpening(true);
-    setIsPdfModalOpen(true);
-    // Forțăm re-render pentru animație instantanee
-    requestAnimationFrame(() => {
-      // După ce animația de deschidere se termină, resetăm flag-ul
-      setTimeout(() => {
-        setIsPdfModalOpening(false);
-      }, 300);
-    });
-  };
+  // Removed unused function: _handleOpenPdfModal - not used in EORI form
 
   const handleClosePdfModal = () => {
     setIsPdfModalClosing(true);
@@ -382,7 +367,8 @@ const HomePage = () => {
     }, 300);
   };
 
-  const _handleContactContinue = () => {
+  // Removed unused function: _handleContactContinue
+  const _unused_handleContactContinue = () => {
     // Resetăm erorile
     _setContactError('');
     setEmailError('');
@@ -418,23 +404,7 @@ const HomePage = () => {
     setStep(5);
   };
 
-  // Funcție pentru calcularea prețului în funcție de tipul documentului și extractType
-  const _getDocumentPrice = (docType: string, extract?: string): number => {
-    if (docType === 'certificat_beneficiar') {
-      return 88;
-    }
-    if (docType === 'furnizare_info') {
-      // Dacă este selectat "Raport istoric", prețul este 247 lei, altfel 165 lei
-      if (extract === 'raport_istoric') {
-        return 247;
-      }
-      return 165;
-    }
-    if (docType === 'certificat_istoric') {
-      return 399;
-    }
-    return 0;
-  };
+  // Removed unused function: _getDocumentPrice - not used in EORI form
 
   return (
     <div className="min-h-screen bg-darkBlue-950">
@@ -510,7 +480,7 @@ const HomePage = () => {
                           name="requestType"
                           value="obtinere"
                           checked={requestType === 'obtinere'}
-                          onChange={() => setRequestType('obtinere')}
+                          onChange={(_e) => setRequestType('obtinere')}
                           className="sr-only"
                         />
                       </label>
@@ -538,7 +508,7 @@ const HomePage = () => {
                           name="requestType"
                           value="modificare"
                           checked={requestType === 'modificare'}
-                          onChange={() => setRequestType('modificare')}
+                          onChange={(_e) => setRequestType('modificare')}
                           className="sr-only"
                         />
                       </label>

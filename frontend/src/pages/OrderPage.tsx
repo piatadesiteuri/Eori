@@ -228,6 +228,7 @@ const OrderPage = () => {
               email: '',
               phone: '',
             }}
+            onBack={() => setStep(3)}
           />
         )}
 
