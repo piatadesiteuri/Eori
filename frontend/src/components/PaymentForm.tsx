@@ -38,7 +38,7 @@ const PaymentForm = ({
   documentType,
   documentPurpose,
   extractType,
-  applicantType,
+  applicantType: _applicantType,
   billingType = 'company',
   billingCui = '',
   billingCompanyData = null,

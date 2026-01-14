@@ -4,7 +4,7 @@ interface LogoProps {
   scrolled?: boolean;
 }
 
-const Logo = ({ className = '', onClick, scrolled = false }: LogoProps) => {
+const Logo = ({ className = '', onClick }: LogoProps) => {
   return (
     <button
       type="button"

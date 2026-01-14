@@ -2,7 +2,7 @@ interface PaymentLogosProps {
   dark?: boolean;
 }
 
-const PaymentLogos = ({ dark = false }: PaymentLogosProps) => {
+const PaymentLogos = ({}: PaymentLogosProps) => {
   return (
     <div className="flex items-center gap-2 flex-wrap">
       <img 

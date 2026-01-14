@@ -1,10 +1,9 @@
 import { useState, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
-import { CheckCircleIcon, ClockIcon, DocumentIcon, EnvelopeIcon, EyeIcon, MapPinIcon, SignalIcon, ArrowPathIcon, ShieldCheckIcon, ArrowDownTrayIcon, ChevronDownIcon, XMarkIcon } from '@heroicons/react/24/outline';
+import { CheckCircleIcon, ArrowPathIcon, ChevronDownIcon, XMarkIcon } from '@heroicons/react/24/outline';
 import { MagnifyingGlassIcon } from '@heroicons/react/24/outline';
 import axios from 'axios';
 import PaymentForm from '../components/PaymentForm';
-import PaymentLogos from '../components/PaymentLogos';
 
 interface CompanyData {
   cui: string;
@@ -16,33 +15,7 @@ interface CompanyData {
   status: string;
 }
 
-// Opțiuni pentru scop document
-const documentPurposeOptions = [
-  { value: '', label: 'Scop document' },
-  { value: 'informare', label: 'Informare' },
-  { value: 'fonduri_imm', label: 'Fonduri IMM' },
-  { value: 'insolventa', label: 'Insolvență' },
-  { value: 'inspectoratul_general_pentru_imigrari', label: 'Inspectoratul General pentru Imigrări' },
-  { value: 'casa_nationala_de_asigurari_de_sanatate', label: 'Casa Națională de Asigurări de Sănătate' },
-  { value: 'licitatie', label: 'Licitatie' },
-  { value: 'notar', label: 'Notar' },
-  { value: 'banca', label: 'Bancă' },
-  { value: 'autorizare', label: 'Autorizare' },
-  { value: 'instanta', label: 'Instanță' },
-  { value: 'clasificare_turism', label: 'Clasificare Turism' },
-  { value: 'inmatriculare_auto', label: 'Înmatriculare Auto' },
-  { value: 'autoritate_publica', label: 'Autoritate Publică' },
-  { value: 'anaf', label: 'ANAF' },
-  { value: 'apia', label: 'APIA' },
-  { value: 'altele', label: 'Altele (completare manuală)' },
-];
-
-// Opțiuni pentru tip extras
-const extractTypeOptions = [
-  { value: '', label: 'Tip document' },
-  { value: 'situatie_la_zi', label: 'Situatie la zi - 165 lei' },
-  { value: 'raport_istoric', label: 'Raport istoric - 247 lei' },
-];
+// Removed unused options - not needed for EORI form
 
 // Opțiuni pentru prefixe de țară
 const countryCodes = [
@@ -91,7 +64,7 @@ const HomePage = () => {
           if (formData.billingType) setBillingType(formData.billingType);
           if (formData.billingCui) setBillingCui(formData.billingCui);
           if (formData.billingCompanyData) setBillingCompanyData(formData.billingCompanyData);
-          if (formData.billingFormData) _setBillingFormData(formData.billingFormData);
+          // Removed unused billingFormData restoration
           if (formData.contactData) setContactData(formData.contactData);
           if (formData.phoneCountryCode) setPhoneCountryCode(formData.phoneCountryCode);
           
@@ -138,9 +111,7 @@ const HomePage = () => {
   const [loading, setLoading] = useState(false);
   const [companyData, setCompanyData] = useState<CompanyData | null>(null);
   const [error, setError] = useState('');
-  const [_orderId, _setOrderId] = useState<number | null>(null);
-  const [_documentPurposeOpen, _setDocumentPurposeOpen] = useState(false);
-  const [_extractTypeOpen, _setExtractTypeOpen] = useState(false);
+  // Removed unused state variables
   const [contactData, setContactData] = useState({
     firstName: '',
     lastName: '',
@@ -148,7 +119,7 @@ const HomePage = () => {
     phone: '',
   });
   const [phoneCountryCode, setPhoneCountryCode] = useState('+40'); // Default: România
-  const [_contactError, _setContactError] = useState('');
+  // Removed unused contactError state
   const [emailError, setEmailError] = useState('');
   const [phoneError, setPhoneError] = useState('');
   const [phoneCountryCodeOpen, setPhoneCountryCodeOpen] = useState(false);
@@ -165,18 +136,11 @@ const HomePage = () => {
   const [isEoriImageLoading, setIsEoriImageLoading] = useState(true);
   const [eoriImageType, setEoriImageType] = useState<'etapa1' | 'etapa2'>('etapa1');
 
-  // Removed - no longer needed for EORI form
-  
   // Billing form state - moved to HomePage to persist data
   const [billingType, setBillingType] = useState<'company' | 'other_company' | 'individual'>('company');
   const [billingCui, setBillingCui] = useState('');
   const [billingCompanyData, setBillingCompanyData] = useState<CompanyData | null>(null);
-  const [_billingCuiLoading, _setBillingCuiLoading] = useState(false);
   const [billingCuiError, setBillingCuiError] = useState('');
-  const [_billingFormData, _setBillingFormData] = useState({
-    firstName: '',
-    lastName: '',
-  });
 
   const handleSearch = async () => {
     if (!cui || !/^\d+$/.test(cui)) {
@@ -219,64 +183,7 @@ const HomePage = () => {
     }
   };
 
-  // Removed unused function: _handleBillingCuiSearch
-  const _unused_handleBillingCuiSearch = async () => {
-    if (!billingCui || !/^\d+$/.test(billingCui)) {
-      setBillingCuiError('CUI invalid. Te rugăm să introduci un CUI valid format doar din cifre.');
-      setBillingCompanyData(null);
-      return;
-    }
-
-    _setBillingCuiLoading(true);
-    setBillingCuiError('');
-
-    try {
-      const response = await axios.post('/api/search', { cui: billingCui });
-      if (response.data.success && response.data.data) {
-        setBillingCompanyData(response.data.data);
-        setBillingCuiError('');
-      } else {
-        setBillingCuiError(response.data?.error || 'CUI-ul introdus nu a fost găsit în baza de date ANAF.');
-        setBillingCompanyData(null);
-      }
-    } catch (err: any) {
-      console.error('Billing CUI search error:', err);
-      const errorMessage = err.response?.data?.error || 'Eroare la căutare';
-      setBillingCuiError(errorMessage);
-      setBillingCompanyData(null);
-    } finally {
-      _setBillingCuiLoading(false);
-    }
-  };
-
-  // Removed unused function: _handleBillingCuiChange
-  const _unused_handleBillingCuiChange = (_value: string) => {
-    setBillingCui(_value);
-    if (billingCuiError) {
-      setBillingCuiError('');
-    }
-    if (billingCompanyData) {
-      setBillingCompanyData(null);
-    }
-  };
-
-  // Removed unused function: _handleContinueToStep2
-  const _unused_handleContinueToStep2 = () => {
-    if (companyData) {
-      setStep(2);
-    }
-  };
-
-  // Removed - no longer needed for EORI form
-
-  // Removed unused function: _handleBillingContinue
-  const _unused_handleBillingContinue = () => {
-    // Doar validăm și trecem la pasul următor, fără să creăm comanda
-    if (billingType === 'other_company' && !billingCompanyData) {
-      return; // Nu ar trebui să ajungă aici dacă validarea este corectă
-    }
-    setStep(4);
-  };
+  // Removed unused billing functions - not needed for EORI form
 
   // Validare email
   const validateEmail = (email: string): boolean => {
@@ -367,42 +274,7 @@ const HomePage = () => {
     }, 300);
   };
 
-  // Removed unused function: _handleContactContinue
-  const _unused_handleContactContinue = () => {
-    // Resetăm erorile
-    _setContactError('');
-    setEmailError('');
-    setPhoneError('');
-
-    // Validare câmpuri obligatorii
-    if (!contactData.firstName || !contactData.lastName) {
-      _setContactError('Te rugăm să completezi numele și prenumele.');
-      return;
-    }
-
-    // Validare email
-    if (!contactData.email) {
-      setEmailError('Email-ul este obligatoriu.');
-      return;
-    }
-    if (!validateEmail(contactData.email)) {
-      setEmailError('Email invalid. Te rugăm să introduci un email valid (ex: nume@example.com)');
-      return;
-    }
-
-    // Validare telefon (dacă este completat)
-    if (contactData.phone && !validatePhone(contactData.phone, phoneCountryCode)) {
-      if (phoneCountryCode === '+40') {
-        setPhoneError('Număr invalid. Te rugăm să introduci un număr românesc valid (9 cifre, ex: 712345678)');
-      } else {
-        setPhoneError('Număr invalid. Te rugăm să introduci un număr valid.');
-      }
-      return;
-    }
-
-    // Doar trecem la pasul următor, fără să creăm comanda
-    setStep(5);
-  };
+  // Removed unused function: _handleContactContinue - not used in EORI form
 
   // Removed unused function: _getDocumentPrice - not used in EORI form
 
@@ -601,7 +473,7 @@ const HomePage = () => {
                           name="applicantType"
                           value="srl_sa"
                           checked={applicantType === 'srl_sa'}
-                          onChange={(e) => setApplicantType(e.target.value)}
+                          onChange={(_e) => setApplicantType(_e.target.value)}
                           className="sr-only"
                         />
                       </label>
@@ -629,7 +501,7 @@ const HomePage = () => {
                           name="applicantType"
                           value="pfa_ii_if"
                           checked={applicantType === 'pfa_ii_if'}
-                          onChange={(e) => setApplicantType(e.target.value)}
+                          onChange={(_e) => setApplicantType(_e.target.value)}
                           className="sr-only"
                         />
                       </label>
@@ -657,7 +529,7 @@ const HomePage = () => {
                           name="applicantType"
                           value="persoana_fizica"
                           checked={applicantType === 'persoana_fizica'}
-                          onChange={(e) => setApplicantType(e.target.value)}
+                          onChange={(_e) => setApplicantType(_e.target.value)}
                           className="sr-only"
                         />
                       </label>
@@ -685,7 +557,7 @@ const HomePage = () => {
                           name="applicantType"
                           value="asociatii"
                           checked={applicantType === 'asociatii'}
-                          onChange={(e) => setApplicantType(e.target.value)}
+                          onChange={(_e) => setApplicantType(_e.target.value)}
                           className="sr-only"
                         />
                       </label>
@@ -1048,10 +920,8 @@ const HomePage = () => {
                           setCompanyData(null);
                           setRequestType('obtinere');
                           setApplicantType('');
-                          _setOrderId(null);
                           setBillingCui('');
                           setBillingCompanyData(null);
-                          _setBillingFormData({ firstName: '', lastName: '' });
                           setContactData({ firstName: '', lastName: '', email: '', phone: '' });
                         }}
                         className="bg-orange-500 hover:bg-orange-600 text-white font-semibold py-3 px-6 rounded-lg transition-colors"
