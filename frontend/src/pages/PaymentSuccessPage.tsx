@@ -41,7 +41,7 @@ const PaymentSuccessPage = () => {
   const [searchParams] = useSearchParams();
   const [loading, setLoading] = useState(true);
   const [success, setSuccess] = useState(false);
-  const [orderId, setOrderId] = useState<string | null>(null);
+  const [_orderId, _setOrderId] = useState<string | null>(null);
   const [error, setError] = useState('');
   const [paymentDetails, setPaymentDetails] = useState<PaymentStatusResponse | null>(null);
 
@@ -57,7 +57,8 @@ const PaymentSuccessPage = () => {
         return;
       }
 
-      setOrderId(orderIdParam);
+      // Order ID stored in state but not used in EORI form
+      // _setOrderId(orderIdParam);
 
       // IMPORTANT: Verificăm întotdeauna statusul comenzii din baza de date,
       // indiferent de parametrii URL, pentru că Netopia poate să nu trimită status în URL

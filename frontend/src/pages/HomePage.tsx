@@ -91,7 +91,7 @@ const HomePage = () => {
           if (formData.billingType) setBillingType(formData.billingType);
           if (formData.billingCui) setBillingCui(formData.billingCui);
           if (formData.billingCompanyData) setBillingCompanyData(formData.billingCompanyData);
-          if (formData.billingFormData) setBillingFormData(formData.billingFormData);
+          if (formData.billingFormData) _setBillingFormData(formData.billingFormData);
           if (formData.contactData) setContactData(formData.contactData);
           if (formData.phoneCountryCode) setPhoneCountryCode(formData.phoneCountryCode);
           
@@ -138,9 +138,9 @@ const HomePage = () => {
   const [loading, setLoading] = useState(false);
   const [companyData, setCompanyData] = useState<CompanyData | null>(null);
   const [error, setError] = useState('');
-  const [orderId, setOrderId] = useState<number | null>(null);
-  const [documentPurposeOpen, setDocumentPurposeOpen] = useState(false);
-  const [extractTypeOpen, setExtractTypeOpen] = useState(false);
+  const [_orderId, _setOrderId] = useState<number | null>(null);
+  const [_documentPurposeOpen, _setDocumentPurposeOpen] = useState(false);
+  const [_extractTypeOpen, _setExtractTypeOpen] = useState(false);
   const [contactData, setContactData] = useState({
     firstName: '',
     lastName: '',
@@ -148,7 +148,7 @@ const HomePage = () => {
     phone: '',
   });
   const [phoneCountryCode, setPhoneCountryCode] = useState('+40'); // Default: România
-  const [contactError, setContactError] = useState('');
+  const [_contactError, _setContactError] = useState('');
   const [emailError, setEmailError] = useState('');
   const [phoneError, setPhoneError] = useState('');
   const [phoneCountryCodeOpen, setPhoneCountryCodeOpen] = useState(false);
@@ -171,9 +171,9 @@ const HomePage = () => {
   const [billingType, setBillingType] = useState<'company' | 'other_company' | 'individual'>('company');
   const [billingCui, setBillingCui] = useState('');
   const [billingCompanyData, setBillingCompanyData] = useState<CompanyData | null>(null);
-  const [billingCuiLoading, setBillingCuiLoading] = useState(false);
+  const [_billingCuiLoading, _setBillingCuiLoading] = useState(false);
   const [billingCuiError, setBillingCuiError] = useState('');
-  const [billingFormData, setBillingFormData] = useState({
+  const [_billingFormData, _setBillingFormData] = useState({
     firstName: '',
     lastName: '',
   });
@@ -219,14 +219,14 @@ const HomePage = () => {
     }
   };
 
-  const handleBillingCuiSearch = async () => {
+  const _handleBillingCuiSearch = async () => {
     if (!billingCui || !/^\d+$/.test(billingCui)) {
       setBillingCuiError('CUI invalid. Te rugăm să introduci un CUI valid format doar din cifre.');
       setBillingCompanyData(null);
       return;
     }
 
-    setBillingCuiLoading(true);
+    _setBillingCuiLoading(true);
     setBillingCuiError('');
 
     try {
@@ -244,11 +244,11 @@ const HomePage = () => {
       setBillingCuiError(errorMessage);
       setBillingCompanyData(null);
     } finally {
-      setBillingCuiLoading(false);
+      _setBillingCuiLoading(false);
     }
   };
 
-  const handleBillingCuiChange = (value: string) => {
+  const _handleBillingCuiChange = (value: string) => {
     setBillingCui(value);
     if (billingCuiError) {
       setBillingCuiError('');
@@ -258,7 +258,7 @@ const HomePage = () => {
     }
   };
 
-  const handleContinueToStep2 = () => {
+  const _handleContinueToStep2 = () => {
     if (companyData) {
       setStep(2);
     }
@@ -266,7 +266,7 @@ const HomePage = () => {
 
   // Removed - no longer needed for EORI form
 
-  const handleBillingContinue = () => {
+  const _handleBillingContinue = () => {
     // Doar validăm și trecem la pasul următor, fără să creăm comanda
     if (billingType === 'other_company' && !billingCompanyData) {
       return; // Nu ar trebui să ajungă aici dacă validarea este corectă
@@ -325,7 +325,7 @@ const HomePage = () => {
     }
   };
 
-  const handleOpenPdfModal = (type: 'company' | 'individual' | 'beneficiari_reali_company' | 'beneficiari_reali_individual' | 'istoric_company' = 'company') => {
+  const _handleOpenPdfModal = (type: 'company' | 'individual' | 'beneficiari_reali_company' | 'beneficiari_reali_individual' | 'istoric_company' = 'company') => {
     // Resetăm starea de închidere dacă există
     setIsPdfModalClosing(false);
     setIsPdfLoading(true); // Resetăm loading când deschidem modalul
@@ -382,15 +382,15 @@ const HomePage = () => {
     }, 300);
   };
 
-  const handleContactContinue = () => {
+  const _handleContactContinue = () => {
     // Resetăm erorile
-    setContactError('');
+    _setContactError('');
     setEmailError('');
     setPhoneError('');
 
     // Validare câmpuri obligatorii
     if (!contactData.firstName || !contactData.lastName) {
-      setContactError('Te rugăm să completezi numele și prenumele.');
+      _setContactError('Te rugăm să completezi numele și prenumele.');
       return;
     }
 
@@ -419,7 +419,7 @@ const HomePage = () => {
   };
 
   // Funcție pentru calcularea prețului în funcție de tipul documentului și extractType
-  const getDocumentPrice = (docType: string, extract?: string): number => {
+  const _getDocumentPrice = (docType: string, extract?: string): number => {
     if (docType === 'certificat_beneficiar') {
       return 88;
     }
@@ -510,7 +510,7 @@ const HomePage = () => {
                           name="requestType"
                           value="obtinere"
                           checked={requestType === 'obtinere'}
-                          onChange={(e) => setRequestType('obtinere')}
+                          onChange={() => setRequestType('obtinere')}
                           className="sr-only"
                         />
                       </label>
@@ -538,7 +538,7 @@ const HomePage = () => {
                           name="requestType"
                           value="modificare"
                           checked={requestType === 'modificare'}
-                          onChange={(e) => setRequestType('modificare')}
+                          onChange={() => setRequestType('modificare')}
                           className="sr-only"
                         />
                       </label>
@@ -1078,10 +1078,10 @@ const HomePage = () => {
                           setCompanyData(null);
                           setRequestType('obtinere');
                           setApplicantType('');
-                          setOrderId(null);
+                          _setOrderId(null);
                           setBillingCui('');
                           setBillingCompanyData(null);
-                          setBillingFormData({ firstName: '', lastName: '' });
+                          _setBillingFormData({ firstName: '', lastName: '' });
                           setContactData({ firstName: '', lastName: '', email: '', phone: '' });
                         }}
                         className="bg-orange-500 hover:bg-orange-600 text-white font-semibold py-3 px-6 rounded-lg transition-colors"
@@ -1708,250 +1708,6 @@ const HomePage = () => {
   );
 };
 
-// Billing Form Component
-const BillingForm = ({
-  companyData,
-  documentType,
-  onContinue,
-  formData,
-  setFormData,
-  billingType,
-  setBillingType,
-  billingCui,
-  setBillingCui,
-  billingCompanyData,
-  billingCuiLoading,
-  billingCuiError,
-  onBillingCuiSearch,
-  onBillingCuiChange,
-  onBack,
-}: {
-  companyData: CompanyData | null;
-  documentType: string;
-  onContinue: () => void;
-  formData: {
-    firstName: string;
-    lastName: string;
-  };
-  setFormData: React.Dispatch<React.SetStateAction<{
-    firstName: string;
-    lastName: string;
-  }>>;
-  billingType: 'company' | 'other_company' | 'individual';
-  setBillingType: React.Dispatch<React.SetStateAction<'company' | 'other_company' | 'individual'>>;
-  billingCui: string;
-  setBillingCui: React.Dispatch<React.SetStateAction<string>>;
-  billingCompanyData: CompanyData | null;
-  billingCuiLoading: boolean;
-  billingCuiError: string;
-  onBillingCuiSearch: () => void;
-  onBillingCuiChange: (value: string) => void;
-  onBack: () => void;
-}) => {
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    
-    // Validare pentru "altă firmă" - trebuie să fie validat CUI-ul
-    if (billingType === 'other_company' && !billingCompanyData) {
-      setError('Te rugăm să validezi CUI-ul firmei pentru facturare.');
-      return;
-    }
-
-    // Validare pentru "persoană fizică"
-    if (billingType === 'individual' && (!formData.firstName || !formData.lastName)) {
-      setError('Te rugăm să completezi numele și prenumele.');
-      return;
-    }
-
-    // Dacă totul este valid, continuăm la pasul următor
-    onContinue();
-  };
-
-  return (
-    <form onSubmit={handleSubmit} className="space-y-3">
-        <p className="text-xs text-gray-600 mb-2">Alege datele de facturare</p>
-        
-        {/* Billing Type Selection - Compact Radio Buttons */}
-        <div className="space-y-1.5 mb-4">
-          <label className={`flex items-center p-2 border rounded-lg cursor-pointer transition-all text-xs ${
-            billingType === 'company'
-              ? 'border-primary-600 bg-primary-50'
-              : 'border-gray-200 hover:border-primary-300 bg-white'
-          }`}>
-            <input
-              type="radio"
-              name="billingType"
-              value="company"
-              checked={billingType === 'company'}
-              onChange={(e) => setBillingType(e.target.value as 'company')}
-              className="w-3 h-3 text-primary-600 border-gray-300 focus:ring-primary-500 mr-2"
-            />
-            <span className="text-xs text-gray-700">
-              Eliberare factură pe <strong>firma din certificat</strong>
-            </span>
-          </label>
-          <label className={`flex items-center p-2 border rounded-lg cursor-pointer transition-all text-xs ${
-            billingType === 'other_company'
-              ? 'border-primary-600 bg-primary-50'
-              : 'border-gray-200 hover:border-primary-300 bg-white'
-          }`}>
-            <input
-              type="radio"
-              name="billingType"
-              value="other_company"
-              checked={billingType === 'other_company'}
-              onChange={(e) => setBillingType(e.target.value as 'other_company')}
-              className="w-3 h-3 text-primary-600 border-gray-300 focus:ring-primary-500 mr-2"
-            />
-            <span className="text-xs text-gray-700">
-              Eliberare factură pe <strong>altă firmă</strong>
-            </span>
-          </label>
-          <label className={`flex items-center p-2 border rounded-lg cursor-pointer transition-all text-xs ${
-            billingType === 'individual'
-              ? 'border-primary-600 bg-primary-50'
-              : 'border-gray-200 hover:border-primary-300 bg-white'
-          }`}>
-            <input
-              type="radio"
-              name="billingType"
-              value="individual"
-              checked={billingType === 'individual'}
-              onChange={(e) => setBillingType(e.target.value as 'individual')}
-              className="w-3 h-3 text-primary-600 border-gray-300 focus:ring-primary-500 mr-2"
-            />
-            <span className="text-xs text-gray-700">
-              Eliberare factură pe <strong>persoană fizică</strong>
-            </span>
-          </label>
-        </div>
-
-        {/* Conditional Fields based on billingType */}
-        {billingType === 'other_company' && (
-          <>
-            <div>
-              <label className="block text-xs font-medium text-gray-700 mb-1">
-                CUI sau CIF facturare *
-              </label>
-              <input
-                type="text"
-                value={billingCui}
-                onChange={(e) => onBillingCuiChange(e.target.value)}
-                placeholder="CUI sau CIF facturare"
-                className={`w-full px-3 py-1.5 text-sm border-2 rounded-lg focus:ring-2 focus:ring-primary-500 transition-all ${
-                  billingCuiError ? 'border-red-500' : 'border-gray-300'
-                }`}
-                onKeyPress={(e) => e.key === 'Enter' && onBillingCuiSearch()}
-              />
-              <p className="text-xs text-gray-500 mt-1">
-                CUI/CIF al firmei pe care se eliberează factura
-              </p>
-            </div>
-            {billingCuiError && (
-              <div className="p-2 bg-red-50 text-red-700 rounded-lg text-xs border border-red-200">
-                {billingCuiError}
-              </div>
-            )}
-            {!billingCompanyData && !billingCuiLoading && (
-              <button
-                type="button"
-                onClick={onBillingCuiSearch}
-                disabled={!billingCui || billingCuiLoading}
-                className="w-full bg-green-600 hover:bg-green-700 disabled:bg-gray-400 disabled:cursor-not-allowed text-white font-semibold py-2 px-4 rounded-lg transition-colors flex items-center justify-center space-x-2 text-xs"
-              >
-                {billingCuiLoading ? (
-                  <>
-                    <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                    <span>Căutare...</span>
-                  </>
-                ) : (
-                  <>
-                    <MagnifyingGlassIcon className="w-4 h-4" />
-                    <span>Caută firma</span>
-                  </>
-                )}
-              </button>
-            )}
-            {billingCompanyData && (
-              <div className="p-2 bg-primary-50 rounded-lg border border-primary-200 text-xs">
-                <p className="font-semibold text-gray-900">{billingCompanyData.name}</p>
-                <p className="text-gray-600">CUI: {billingCompanyData.cui}</p>
-                {billingCompanyData.registrationNumber && (
-                  <p className="text-gray-600">Reg.Com.: {billingCompanyData.registrationNumber}</p>
-                )}
-                <p className="text-gray-600">{billingCompanyData.address}</p>
-                <div className="flex items-center space-x-2 mt-2">
-                  <CheckCircleIcon className="w-4 h-4 text-green-600" />
-                  <span className="text-green-700 text-xs">Firma validată</span>
-                </div>
-              </div>
-            )}
-          </>
-        )}
-
-        {billingType === 'individual' && (
-          <div className="grid grid-cols-2 gap-3">
-            <div>
-              <label className="block text-xs font-medium text-gray-700 mb-1">
-                Nume *
-              </label>
-              <input
-                type="text"
-                required
-                value={formData.lastName}
-                onChange={(e) =>
-                  setFormData({ ...formData, lastName: e.target.value })
-                }
-                placeholder="Nume"
-                className="w-full px-3 py-1.5 text-sm border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500"
-              />
-            </div>
-            <div>
-              <label className="block text-xs font-medium text-gray-700 mb-1">
-                Prenume *
-              </label>
-              <input
-                type="text"
-                required
-                value={formData.firstName}
-                onChange={(e) =>
-                  setFormData({ ...formData, firstName: e.target.value })
-                }
-                placeholder="Prenume, Prenume (ex: Ion, Maria)"
-                className="w-full px-3 py-1.5 text-sm border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500"
-              />
-            </div>
-          </div>
-        )}
-
-
-        {error && (
-          <div className="p-2 bg-red-50 text-red-700 rounded-lg text-xs border border-red-200">{error}</div>
-        )}
-        {error && (
-          <div className="p-2 bg-red-50 text-red-700 rounded-lg text-xs border border-red-200">{error}</div>
-        )}
-        <div className="flex items-center justify-between gap-3 mt-4">
-          <button
-            type="button"
-            onClick={onBack}
-            className="flex-1 px-3 py-2 text-xs font-medium text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-lg transition-colors"
-          >
-            ← Înapoi
-          </button>
-          <button
-            type="submit"
-            disabled={loading || (billingType === 'other_company' && !billingCompanyData) || (billingType === 'individual' && (!formData.firstName || !formData.lastName))}
-            className="flex-1 px-3 py-2 text-xs font-semibold text-white bg-primary-600 hover:bg-primary-700 disabled:bg-gray-300 disabled:cursor-not-allowed rounded-lg transition-colors"
-          >
-            {loading ? 'Se procesează...' : 'Mai departe →'}
-          </button>
-        </div>
-      </form>
-  );
-};
+// Billing Form Component - Not used in EORI form, removed to fix TypeScript errors
 
 export default HomePage;

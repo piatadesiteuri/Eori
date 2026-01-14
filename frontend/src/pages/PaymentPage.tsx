@@ -42,7 +42,7 @@ const PaymentPage = () => {
   const [loading, setLoading] = useState(false);
   const [processing, setProcessing] = useState(false);
   const [error, setError] = useState('');
-  const [success, setSuccess] = useState(false);
+  const [success, _setSuccess] = useState(false);
   const [orderId, setOrderId] = useState<number | null>(null);
   const [email, setEmail] = useState(state?.contactData?.email || '');
 
