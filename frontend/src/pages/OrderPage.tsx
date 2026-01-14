@@ -220,9 +220,14 @@ const OrderPage = () => {
         {/* Step 4: Payment */}
         {step === 4 && orderId && (
           <PaymentForm
-            orderId={orderId}
+            companyData={companyData}
             documentType={documentType}
-            onPaymentSuccess={() => setStep(5)}
+            contactData={{
+              firstName: '',
+              lastName: '',
+              email: '',
+              phone: '',
+            }}
           />
         )}
 

@@ -1,4 +1,5 @@
 // API configuration for development and production
+// @ts-ignore - Vite provides import.meta.env
 const API_BASE_URL = import.meta.env.VITE_API_URL || '';
 
 /**
